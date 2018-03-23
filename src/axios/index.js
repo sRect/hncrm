@@ -3,7 +3,7 @@ import qs from "qs";
 import { Message, Loading } from "element-ui";
 
 const Axios = axios.create({
-  // baseURL: "https://www.jzwms.com/hncrm/",
+  baseURL: "https://www.jzwms.com/hncrm/",
   // baseURL: "http://192.168.1.76",
   // baseURL: "http://192.168.1.76",
   timeout: 5000,

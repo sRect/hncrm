@@ -11,13 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/hncrm': {
-        target: 'https://www.jzwms.com/hncrm/',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/hncrm': ''
-        }
-      }
+      // '/hncrm': {
+      //   target: 'https://www.jzwms.com/hncrm/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/hncrm': ''
+      //   }
+      // }
     },
 
     // Various Dev Server settings

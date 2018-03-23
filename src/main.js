@@ -11,13 +11,15 @@ import {
   Button,
   Table,
   TableColumn,
-  Pagination
+  Pagination,
+  Message
 } from 'element-ui'
 
 import axios from './axios'
 import isEmpty from 'lodash/isEmpty'
 import App from './App'
 import router from './router'
+
 
 Vue.config.productionTip = false
 
@@ -32,8 +34,9 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
 
+Object.defineProperty(Vue.prototype, "$message", { value: Message })
 Object.defineProperty(Vue.prototype, "$isEmpty", { value: isEmpty })
-Vue.prototype.HOST = '/hncrm'
+// Vue.prototype.HOST = '/hncrm'
 
 /* eslint-disable no-new */
 new Vue({
