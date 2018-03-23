@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
+
   export default {
     name: 'AgencyOrderList',
     data() {
@@ -109,19 +111,7 @@
           label: '未发货'
         }],
         value2: '',
-        tableData3: [{
-          creatTime: '2016-05-03',
-          agencyName: '浦东店浦东店浦东店浦东店浦东店浦东店',
-          orderAmount: 1000,
-          orderProcess: '未处理',
-          id: '12'
-        },{
-          creatTime: '2016-05-03',
-          agencyName: '浦东店浦东店浦东店浦东店浦东店浦东店浦东店浦东店浦东店浦东店浦东店浦东店',
-          orderAmount: 1000,
-          orderProcess: '未处理',
-          id: '12'
-        }],
+        tableData3: [], // 列表数据
         currentPage: 1, // 当前页
         pageSize: 20, // 每页大小
         pageCount: 0, // 总条数
@@ -214,15 +204,27 @@
 
         }).catch(error => {
           console.log(error)
+          this.$message({
+            showClose: true,
+            message: error.message,
+            duration: 0,
+            type: "error"
+          })
         })
       },
       handleChange(value) { // 下单时间
         console.log(value)
       },
-      handleClick(row) { // 查看销售明细
+      handleClick: debounce(function(row) { // 查看销售明细
         let id = row.id;
         console.log(id);
-      },
+        this.$router.push({
+          name: 'AgencyOrderDetail',
+          query: {id: id}
+        })
+      }, 200, {
+      "maxWait": 500
+      }),
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },

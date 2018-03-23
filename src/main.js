@@ -12,7 +12,8 @@ import {
   Table,
   TableColumn,
   Pagination,
-  Message
+  Message,
+  MessageBox
 } from 'element-ui'
 
 import axios from './axios'
@@ -35,6 +36,7 @@ Vue.use(TableColumn)
 Vue.use(Pagination)
 
 Object.defineProperty(Vue.prototype, "$message", { value: Message })
+Object.defineProperty(Vue.prototype, "$messagebox", { value: MessageBox })
 Object.defineProperty(Vue.prototype, "$isEmpty", { value: isEmpty })
 // Vue.prototype.HOST = '/hncrm'
 

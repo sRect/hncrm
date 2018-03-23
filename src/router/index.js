@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 const Home = () => import('@/components/Home')
 const AgencyOrderList = () => import('@/components/AgencyOrderList')
+const AgencyOrderDetail = () => import('@/components/AgencyOrderDetail')
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/agencyOrderList',
       name: 'AgencyOrderList',
       component: AgencyOrderList,
+    },
+    {
+      path: '/agencyOrderDetail',
+      name: 'AgencyOrderDetail',
+      component: AgencyOrderDetail,
     },
     {
       path: '/',
