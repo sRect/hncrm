@@ -31,9 +31,29 @@ export default {
             name: 'Home'
           })
           break;
+        case "1":
+          this.$router.push({
+            name: 'ProductList'
+          })
+          break;
         case "2":
           this.$router.push({
             name: 'AgencyOrderList'
+          })
+          break;
+        case "3":
+          this.$router.push({
+            name: 'StoreList'
+          })
+          break;
+        case "4":
+          this.$router.push({
+            name: 'SalesList'
+          })
+          break;
+        case "5":
+          this.$router.push({
+            name: 'StaffList'
           })
           break;
         default: 
