@@ -13,7 +13,8 @@
           @change="handleChange"
           :default-time="['00:00:00', '23:59:59']">
         </el-date-picker>
-        <el-select v-model="value" placeholder="请选择">
+        <span>商品类型：</span>
+        <el-select v-model="value" clearable placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -21,7 +22,8 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-model="value2" placeholder="请选择">
+        <span>订单状态：</span>
+        <el-select v-model="value2" clearable placeholder="请选择">
           <el-option
             v-for="item in options2"
             :key="item.value"
@@ -29,7 +31,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button type="primary">导出明细</el-button>
+        <el-button class="fr" type="primary" @click="exportAgencyOrder">导出明细</el-button>
       </div>
     </div>
     <div class="main">
@@ -94,27 +96,39 @@ import debounce from 'lodash/debounce'
     name: 'AgencyOrderList',
     data() {
       return {
-        value13: [],
+        value13: [], // 下单时间arr
         options: [{
           value: '1',
           label: '龙虾类'
         }, {
           value: '2',
-          label: '非虾类'
+          label: '配料'
+        }, {
+          value: '3',
+          label: '卤品'
         }],
-        value: '',
         options2: [{
+          value: '0',
+          label: '配货'
+        }, {
           value: '1',
-          label: '已发货'
+          label: '运输中'
         }, {
           value: '2',
-          label: '未发货'
+          label: '运输完毕'
+        }, {
+          value: '4',
+          label: '退货中'
+        }, {
+          value: '5',
+          label: '退货完毕'
         }],
-        value2: '',
+        value: '', // 商品类型
+        value2: '', // 订单状态
         tableData3: [], // 列表数据
         currentPage: 1, // 当前页
         pageSize: 20, // 每页大小
-        pageCount: 0, // 总条数
+        pageCount: 0 // 总条数
       }
     },
     watch: {
@@ -212,12 +226,12 @@ import debounce from 'lodash/debounce'
           })
         })
       },
-      handleChange(value) { // 下单时间
-        console.log(value)
+      handleChange(arr) { // 下单时间change
+        // this.startTime = arr[0];
+        // this.endTime = arr[1];
       },
       handleClick: debounce(function(row) { // 查看销售明细
         let id = row.id;
-        console.log(id);
         this.$router.push({
           name: 'AgencyOrderDetail',
           query: {id: id}
@@ -231,7 +245,91 @@ import debounce from 'lodash/debounce'
       handleCurrentChange(val) { // 分页点击
         console.log(`当前页: ${val}`);
         this.currentPage = val;
-      }
+      },
+      exportAgencyOrder: debounce(function() { // 导出明细
+        const self = this;
+        let orderStatus = self.value2, 
+          materialType = self.value,
+          startTime = "",
+          endTime = "";
+
+        if(self.value13) {
+          if(self.value13.length) {
+              startTime = self.value13[0], 
+              endTime = self.value13[1];
+          }else {
+            self.$messagebox.alert('请选择下单时间', '提示', {
+              closeOnClickModal: false,
+              type: "warning",
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+            return;
+          }
+        }else {
+          self.$messagebox.alert('请选择下单时间', '提示', {
+            closeOnClickModal: false,
+            type: "warning",
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return;
+        }
+
+        if(!materialType) {
+          self.$messagebox.alert('请选择商品类型', '提示', {
+            closeOnClickModal: false,
+            type: "warning",
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return;
+        }
+
+        if(!orderStatus) {
+          self.$messagebox.alert('请选择订单状态', '提示', {
+            closeOnClickModal: false,
+            type: "warning",
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return;
+        }
+console.log(orderStatus)
+console.log(materialType)
+console.log(startTime)
+console.log(endTime)
+        if(orderStatus && materialType && startTime && endTime) {
+          let form = document.createElement("form");
+          let input = document.createElement("input");
+          // $(input).attr('type', 'hidden');
+          form.style.display = "none";
+          form.setAttribute("method", "post");
+          // 本地
+          form.setAttribute("action", "https://www.jzwms.com/hncrm/agencyOrder/exportAgencyOrder?orderStatus="+ orderStatus + "&materialType=" + materialType + "&startTime=" + startTime + "&endTime=" + endTime );
+
+          document.body.appendChild(form);
+          form.appendChild(input);
+          form.submit();
+          form.parentNode.removeChild(form);
+        }else {
+          self.$messagebox.alert('请选择导出条件', '提示', {
+            closeOnClickModal: false,
+            type: "warning",
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return;
+        }
+
+      }, 500, {
+      "maxWait": 1000
+      }),
     },
     mounted() {
       this.getData()
@@ -246,5 +344,8 @@ import debounce from 'lodash/debounce'
 .pagination {
   padding-top: 20px;
   text-align: right;
+}
+.fr {
+  float: right;
 }
 </style>
