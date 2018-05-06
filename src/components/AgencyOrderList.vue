@@ -31,7 +31,9 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button class="fr" type="primary" @click="exportAgencyOrder">导出明细</el-button>
+        <div class="fr">
+          <el-button type="primary" @click="exportAgencyOrder">导出明细</el-button>
+        </div>
       </div>
     </div>
     <div class="main">

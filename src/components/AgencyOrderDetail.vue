@@ -1,71 +1,71 @@
 <template>
   <div>
     <el-table
-        :data="tableData"
-        max-height="400"
-        border
-        stripe
-        style="width: 100%">
-        <el-table-column
-          prop="agencyName"
-          label="门店名称"
-          :show-overflow-tooltip="true"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="creatTime"
-          label="下单时间"
-          sortable
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="materialName"
-          sortable
-          label="产品">
-        </el-table-column>
-        <el-table-column
-          prop="orderPrice"
-          label="单价"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="orderCount"
-          label="数量"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="orderAmount"
-          label="总金额"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="isPay"
-          label="是否支付"
-          :formatter="formatterIsPay"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="isLogistics"
-          label="配送状态"
-          :formatter="formatterIsLogistics"
-          sortable>
-        </el-table-column>
-        <el-table-column
-          prop="orderStatus"
-          label="订单状态"
-          :formatter="formatterOrderStatus"
-          sortable>
-          <template slot-scope="scope">
-            <el-button 
-              :disabled="scope.row.orderStatus !== 4"
-              type="primary" 
-              size="small"
-              @click="handleTuiHuo(scope.row)">
-              {{ scope.row.orderStatus | filterOrderStatus(scope.row.orderStatus) }}
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      :data="tableData"
+      max-height="400"
+      border
+      stripe
+      style="width: 100%">
+      <el-table-column
+        prop="agencyName"
+        label="门店名称"
+        :show-overflow-tooltip="true"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="creatTime"
+        label="下单时间"
+        sortable
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="materialName"
+        sortable
+        label="产品">
+      </el-table-column>
+      <el-table-column
+        prop="orderPrice"
+        label="单价"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="orderCount"
+        label="数量"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="orderAmount"
+        label="总金额"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="isPay"
+        label="是否支付"
+        :formatter="formatterIsPay"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="isLogistics"
+        label="配送状态"
+        :formatter="formatterIsLogistics"
+        sortable>
+      </el-table-column>
+      <el-table-column
+        prop="orderStatus"
+        label="订单状态"
+        :formatter="formatterOrderStatus"
+        sortable>
+        <template slot-scope="scope">
+          <el-button 
+            :disabled="scope.row.orderStatus !== 4"
+            type="primary" 
+            size="small"
+            @click="handleTuiHuo(scope.row)">
+            {{ scope.row.orderStatus | filterOrderStatus(scope.row.orderStatus) }}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -225,7 +225,7 @@
       handleTuiHuo: debounce(function(obj) {
         let orderStatus = obj.orderStatus;
 
-        this.$http.post("https://www.jzwms.com/hnMiniApp/tuikuan", {
+        this.$http.post("/hnMiniApp/tuikuan", {
           "agencyOrderID": this.detailID,
           "refund": obj.orderAmount,
           // "refund": 0.01,
