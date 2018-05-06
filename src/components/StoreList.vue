@@ -245,7 +245,7 @@ export default {
       this.currentPage = val;
     },
     handleAddAgency: debounce(function(formName) { // 添加信息
-    console.log(formName)
+      console.log(formName)
       this.$refs[formName].validate((valid) => {
         console.log(valid)
         if (valid) {
@@ -429,8 +429,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 .main,.top {
   padding-top: 20px;
+}
+.pagination {
+  padding-top: 20px;
+  text-align: right;
 }
 </style>
