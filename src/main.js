@@ -13,7 +13,11 @@ import {
   TableColumn,
   Pagination,
   Message,
-  MessageBox
+  MessageBox,
+  Dialog,
+  Form,
+  FormItem,
+  Input
 } from 'element-ui'
 
 import axios from './axios'
@@ -34,6 +38,10 @@ Vue.use(Button)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
+Vue.use(Dialog)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
 
 Object.defineProperty(Vue.prototype, "$message", { value: Message })
 Object.defineProperty(Vue.prototype, "$messagebox", { value: MessageBox })

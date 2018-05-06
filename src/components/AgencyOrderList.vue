@@ -339,7 +339,7 @@ console.log(endTime)
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .main,.top {
   padding-top: 20px;
 }
