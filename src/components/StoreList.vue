@@ -76,14 +76,14 @@
       </el-dialog>
 
       <el-dialog title="增加信息" :visible.sync="dialogFormVisible2">
-        <el-form :model="form2">
-          <el-form-item label="门店名称" :label-width="formLabelWidth">
+        <el-form :model="form2" :rules="rules" ref="form2">
+          <el-form-item label="门店名称" prop="agencyName" :label-width="formLabelWidth">
             <el-input v-model="form2.agencyName" placeholder="请输入门店名称" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="门店地址" :label-width="formLabelWidth">
+          <el-form-item label="门店地址" prop="address" :label-width="formLabelWidth">
             <el-input v-model="form2.address" placeholder="请输入门店地址" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="门店电话" :label-width="formLabelWidth">
+          <el-form-item label="门店电话" prop="telephone" :label-width="formLabelWidth">
             <el-input v-model="form2.telephone" placeholder="请输入门店电话" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="城市ID" :label-width="formLabelWidth">
@@ -95,13 +95,13 @@
           <el-form-item label="板块ID" :label-width="formLabelWidth">
             <el-input v-model="form2.plateID" disabled auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="门店联系人" :label-width="formLabelWidth">
+          <el-form-item label="门店联系人" prop="linkName" :label-width="formLabelWidth">
             <el-input v-model="form2.linkName" placeholder="请输入门店门店联系人" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="handleAddAgency">确 定</el-button>
+          <el-button type="primary" @click="handleAddAgency('form2')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -152,6 +152,21 @@ export default {
         "boroughID": "",
         "plateID": "",
         "linkName": ""
+      },
+      rules: {
+        agencyName: [
+          { required: true, message: '请输入门店名称', trigger: 'blur' },
+        ],
+        address: [
+          { required: true, message: '请输入门店地址', trigger: 'blur' },
+        ],
+        telephone: [
+          { required: true, message: '请输入门店电话', trigger: ['blur', 'change'] },
+          { type: 'number', message: '门店电话必须为数字值'}
+        ],
+        linkName: [
+          { required: true, message: '请输入门店门店联系人', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -229,66 +244,80 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
-    handleAddAgency: debounce(function() { // 添加信息
-      this.$http.post("agency/creat", {
-        "agencyName": this.form2.agencyName,
-        "address": this.form2.address,
-        "telephone": this.form2.telephone,
-        "cityID": this.form2.cityID,
-        "boroughID": this.form2.boroughID,
-        "plateID": this.form2.plateID,
-        "linkName": this.form2.linkName
-      }).then(data => {
-        let myData = data.data;
-        if(!this.$isEmpty(myData)) {
-          let status = myData.status;
+    handleAddAgency: debounce(function(formName) { // 添加信息
+    console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        console.log(valid)
+        if (valid) {
+          this.$http.post("agency/creat", {
+            "agencyName": this.form2.agencyName,
+            "address": this.form2.address,
+            "telephone": this.form2.telephone,
+            "cityID": this.form2.cityID,
+            "boroughID": this.form2.boroughID,
+            "plateID": this.form2.plateID,
+            "linkName": this.form2.linkName
+          }).then(data => {
+            let myData = data.data;
+            if(!this.$isEmpty(myData)) {
+              let status = myData.status;
 
-          switch(status) {
-              case "success":
-                this.$message({
-                  showClose: true,
-                  message: '添加信息成功',
-                  duration: 1500,
-                  type: "success"
-                })
+              switch(status) {
+                  case "success":
+                    this.$message({
+                      showClose: true,
+                      message: '添加信息成功',
+                      duration: 1500,
+                      type: "success"
+                    })
 
-                this.dialogFormVisible2 = false;
+                    this.dialogFormVisible2 = false;
 
-                break;
-              case "failure":
-                this.$message({
-                  showClose: true,
-                  message: myData.info,
-                  duration: 0,
-                  type: "error"
-                })
-                break;
-              default:
-                this.$message({
-                  showClose: true,
-                  message: '添加信息失败',
-                  duration: 0,
-                  type: "error"
-                })
-                break;
+                    break;
+                  case "failure":
+                    this.$message({
+                      showClose: true,
+                      message: myData.info,
+                      duration: 0,
+                      type: "error"
+                    })
+                    break;
+                  default:
+                    this.$message({
+                      showClose: true,
+                      message: '添加信息失败',
+                      duration: 0,
+                      type: "error"
+                    })
+                    break;
+                }
+            }else {
+              this.$message({
+                showClose: true,
+                message: '返回信息错误',
+                duration: 0,
+                type: "error"
+              })
             }
-        }else {
+          }).catch(error => {
+            console.log(error)
+            this.$message({
+              showClose: true,
+              message: error.message,
+              duration: 0,
+              type: "error"
+            })
+          })
+        } else {
           this.$message({
             showClose: true,
-            message: '返回信息错误',
-            duration: 0,
-            type: "error"
+            message: "输入有误，请检查您的输入信息！",
+            duration: 3000,
+            type: "warning"
           })
+          return false;
         }
-      }).catch(error => {
-        console.log(error)
-        this.$message({
-          showClose: true,
-          message: error.message,
-          duration: 0,
-          type: "error"
-        })
-      })
+      });
 
     }, 200, {
       "maxWait": 500
