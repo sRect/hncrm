@@ -2,7 +2,7 @@
   <div>
   <div class="top clearfix">
       <div>
-        <el-button  type="primary" @click="handleAddPro">添加产品</el-button>
+        <el-button  type="primary" @click="dialogFormVisible2 = true">添加产品</el-button>
       </div>
     </div>
 
@@ -37,7 +37,86 @@
           :formatter="formatter_flag"
           sortable>
         </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button 
+              type="primary" 
+              size="small"
+              plain
+              @click="handleDialog(scope)">
+              修改
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
+
+      <el-dialog title="修改信息" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+          <el-form-item label="产品名称" :label-width="formLabelWidth">
+            <el-input v-model="form.materialName" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="产品价格" :label-width="formLabelWidth">
+            <el-input v-model="form.materialPrice" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="产品类别" :label-width="formLabelWidth">
+            <el-input v-model="form.materialType" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="在售状态" :label-width="formLabelWidth">
+            <el-input v-model="form.flag === 0 ? '关闭' : '开售'" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="父级产品" :label-width="formLabelWidth">
+            <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
+            <el-select v-model="value4" :disabled="disabledFlag" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleConfirmEdit">确 定</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog title="添加产品" :visible.sync="dialogFormVisible2">
+        <el-form :model="form2">
+          <el-form-item label="产品名称" :label-width="formLabelWidth">
+            <el-input v-model="form.materialName" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="产品价格" :label-width="formLabelWidth">
+            <el-input v-model="form.materialPrice" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="产品类别" :label-width="formLabelWidth">
+            <el-select v-model="value5" placeholder="请选择">
+              <el-option
+                v-for="item in options2"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="父级产品" :label-width="formLabelWidth">
+            <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
+            <el-select v-model="value4" :disabled="disabledFlag" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+          <el-button type="primary" @click="handleAddPro">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 
     <div class="pagination">
@@ -64,10 +143,40 @@ export default {
       pageSize: 20, // 每页大小
       currentPage: 1, // 当前页
       pageCount: 0, // 总条数
+      dialogFormVisible: false, // 修改dialog 
+      formLabelWidth: "100px",
+      form: {
+        "materialName": "",
+        "materialPrice": "",
+        "parentID": "",
+        "materialID": "",
+        "flag": "",
+        "materialType": "",
+        "materialTypeName": ""
+      },
+      form2: {
+        "materialName": "",
+        "materialPrice": "",
+        "parentID": "",
+        "materialType": ""
+      },
+      options: [], // 下拉框数据
+      options2: [
+        {id: 1, name: "虾类"},
+        {id: 2, name: "料类"},
+        {id: 3, name: "卤品类"},
+        {id: 4, name: "打包盒类"}
+      ],
+      value4: '', // 下拉框默认数据
+      value5: "",
+      disabledFlag: false, // 禁用下拉框
+      dialogFormVisible2: false,
+      materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类"],
+      
     }
   },
   methods: {
-    getData() {
+    getData() { // 获取表格数据
       this.$http.post("/material/materialList", {
         "pageNum": this.currentPage - 1,
         "pageSize": this.pageSize
@@ -128,6 +237,71 @@ export default {
         })
       })
     },
+    getSelectData(materialType, parentID) { // 获取下拉数据
+      this.$http.post("material/materialDropDown", {
+        "materialType": materialType
+      }).then(data => {
+        console.log(data)
+        let myData = data.data;
+
+        if(!this.$isEmpty(myData)) {
+          let status = myData.status;
+
+          switch(status) {
+            case "success":
+              let obj = myData.data;
+              if(!this.$isEmpty(obj)) { 
+                this.options = obj;
+                this.value4 = parentID;
+              }else {
+                this.$message({
+                  showClose: true,
+                  message: '父级产品下拉查询错误',
+                  duration: 0,
+                  type: "error"
+                })
+                this.options = [];
+              }
+              break;
+            case "failure":
+              this.$message({
+                showClose: true,
+                message: '父级产品下拉查询错误',
+                duration: 0,
+                type: "error"
+              })
+              this.options = [];
+              break;
+            default:
+              this.$message({
+                showClose: true,
+                message: '父级产品下拉查询错误',
+                duration: 0,
+                type: "error"
+              })
+              this.options = [];
+              break;
+          }
+        }else {
+          this.$message({
+            showClose: true,
+            message: '父级产品下拉查询错误',
+            duration: 0,
+            type: "error"
+          })
+          this.options = [];
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$message({
+          showClose: true,
+          message: error.message,
+          duration: 0,
+          type: "error"
+        })
+        this.options = [];
+      })
+    },
     formatter_materialType(row, column, cellValue, index) {
       let newVal = parseInt(cellValue);
       switch(newVal) {
@@ -161,6 +335,47 @@ export default {
           break;
       }
     },
+    handleDialog: debounce(function(val) { // 修改按钮打开dialog
+      this.dialogFormVisible = true;
+      
+      this.form = {
+        "materialName": val.row.materialName,
+        "materialPrice": val.row.materialPrice,
+        "parentID": val.row.parentID,
+        "materialID": val.row.materialID,
+        "flag": val.row.flag,
+        "materialType": this.materialTypeArr[val.row.materialType - 1],
+        "index": val.$index
+      }
+
+      if(parseInt(val.row.parentID)) { // 父级产品ID 为0时 无父级
+        this.getSelectData(val.row.materialType, val.row.parentID);
+        this.disabledFlag = false;
+      }else {
+        this.options = [];
+        this.value4 = "";
+        this.disabledFlag = true;
+      }
+      
+    }, 200, {
+      "maxWait": 500
+    }),
+    handleConfirmEdit: debounce(function() { // 确定修改
+      this.$http.post("material/update", {
+        "materialName": this.form.materialName,
+        "materialPrice": this.form.materialPrice,
+        "parentID": this.form.parentID,
+        "materialID": this.form.materialID,
+        "flag": this.form.flag,
+        "materialType": this.form.materialTypeArr
+      }).then(data => {
+        console.log(data)
+      }).catch(error => {
+        console.log(error)
+      })
+    }, 200, {
+      "maxWait": 500
+    }),
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
@@ -168,8 +383,8 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
-    handleAddPro: debounce(function() {
-      console.log("hello")
+    handleAddPro: debounce(function() { // 添加产品
+      console.log("确定添加")
     }, 200, {
       "maxWait": 500
     })
