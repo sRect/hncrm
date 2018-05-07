@@ -84,7 +84,7 @@
             <el-input v-model="form2.address" placeholder="请输入门店地址" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="门店电话" prop="telephone" :label-width="formLabelWidth">
-            <el-input v-model="form2.telephone" placeholder="请输入门店电话" auto-complete="off"></el-input>
+            <el-input v-model.number="form2.telephone" placeholder="请输入门店电话" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="城市ID" :label-width="formLabelWidth">
             <el-input v-model="form2.cityID" disabled auto-complete="off"></el-input>
