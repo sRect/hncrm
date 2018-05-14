@@ -83,12 +83,12 @@
       </el-dialog>
 
       <el-dialog title="添加产品" :visible.sync="dialogFormVisible2">
-        <el-form :model="form2">
-          <el-form-item label="产品名称" :label-width="formLabelWidth">
-            <el-input v-model="form.materialName" auto-complete="off"></el-input>
+        <el-form :model="form2" :rules="rules" ref="ruleForm">
+          <el-form-item label="产品名称" prop="materialName" :label-width="formLabelWidth">
+            <el-input v-model="form2.materialName" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="产品价格" :label-width="formLabelWidth">
-            <el-input v-model="form.materialPrice" auto-complete="off"></el-input>
+          <el-form-item label="产品价格" prop="materialPrice" :label-width="formLabelWidth">
+            <el-input v-model="form2.materialPrice" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="产品类别" :label-width="formLabelWidth">
             <el-select v-model="value5" placeholder="请选择">
@@ -101,20 +101,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="父级产品" :label-width="formLabelWidth">
-            <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
-            <el-select v-model="value4" :disabled="disabledFlag" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
-              </el-option>
-            </el-select>
+            <el-input v-model="form2.parentID" disabled auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="handleAddPro">确 定</el-button>
+          <el-button type="primary" @click="handleAddPro('ruleForm')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -157,8 +149,7 @@ export default {
       form2: {
         "materialName": "",
         "materialPrice": "",
-        "parentID": "",
-        "materialType": ""
+        "parentID": "0"
       },
       options: [], // 下拉框数据
       options2: [
@@ -168,11 +159,18 @@ export default {
         {id: 4, name: "打包盒类"}
       ],
       value4: '', // 下拉框默认数据
-      value5: "",
+      value5: "", // 添加产品下拉框
       disabledFlag: false, // 禁用下拉框
       dialogFormVisible2: false,
       materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类"],
-      
+      rules: {
+        materialName: [
+          { required: true, message: '请输入产品名称', trigger: 'blur' }
+        ],
+        materialPrice: [
+          { required: true, message: '请输入产品价格', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -383,8 +381,76 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
-    handleAddPro: debounce(function() { // 添加产品
-      console.log("确定添加")
+    handleAddPro: debounce(function(formName) { // 添加产品
+    console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        if(valid) {
+          this.$http.post("agency/creat", {
+            "materialName": this.form2.materialName,
+            "materialPrice": this.form2.materialPrice,
+            "parentID": this.form2.parentID,
+            "materialType": this.value5
+          }).then(data => {
+            let myData = data.data;
+            if(!this.$isEmpty(myData)) {
+              let status = myData.status;
+
+              switch(status) {
+                  case "success":
+                    this.$message({
+                      showClose: true,
+                      message: '添加信息成功',
+                      duration: 1500,
+                      type: "success"
+                    })
+
+                    this.dialogFormVisible2 = false;
+
+                    break;
+                  case "failure":
+                    this.$message({
+                      showClose: true,
+                      message: myData.info,
+                      duration: 0,
+                      type: "error"
+                    })
+                    break;
+                  default:
+                    this.$message({
+                      showClose: true,
+                      message: '添加信息失败',
+                      duration: 0,
+                      type: "error"
+                    })
+                    break;
+                }
+            }else {
+              this.$message({
+                showClose: true,
+                message: '返回信息错误',
+                duration: 0,
+                type: "error"
+              })
+            }
+          }).catch(error => {
+            console.log(error)
+            this.$message({
+              showClose: true,
+              message: error.message,
+              duration: 0,
+              type: "error"
+            })
+          })
+        }else {
+          this.$message({
+            showClose: true,
+            message: "输入有误，请检查您的输入信息！",
+            duration: 3000,
+            type: "warning"
+          })
+          return false;
+        }
+      })
     }, 200, {
       "maxWait": 500
     })
