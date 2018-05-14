@@ -59,14 +59,30 @@
             <el-input v-model="form.materialPrice" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="产品类别" :label-width="formLabelWidth">
-            <el-input v-model="form.materialType" auto-complete="off"></el-input>
+            <!-- <el-input v-model="form.materialType" auto-complete="off"></el-input> -->
+            <el-select v-model="value7" @change="materialTypeChange" placeholder="请选择">
+              <el-option
+                v-for="item in options2"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="在售状态" :label-width="formLabelWidth">
-            <el-input v-model="form.flag === 0 ? '关闭' : '开售'" auto-complete="off"></el-input>
+            <!-- <el-input v-model="form.flag === 0 ? '关闭' : '开售'" auto-complete="off"></el-input> -->
+            <el-select v-model="value6" @change="flagChange" placeholder="请选择">
+              <el-option
+                v-for="item in options3"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="父级产品" :label-width="formLabelWidth">
+          <el-form-item label="选择产品" :label-width="formLabelWidth">
             <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
-            <el-select v-model="value4" :disabled="disabledFlag" placeholder="请选择">
+            <el-select v-model="value4" @change="parentID_Change" :disabled="disabledFlag" placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.id"
@@ -158,8 +174,14 @@ export default {
         {id: 3, name: "卤品类"},
         {id: 4, name: "打包盒类"}
       ],
+      options3: [
+        {id: 0, name: "关闭"},
+        {id: 1, name: "开售"}
+      ],
       value4: '', // 下拉框默认数据
       value5: "", // 添加产品下拉框
+      value6: "", // 修改产品状态下拉
+      value7: "", // 修改产品产品类别下拉
       disabledFlag: false, // 禁用下拉框
       dialogFormVisible2: false,
       materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类"],
@@ -341,10 +363,14 @@ export default {
         "materialPrice": val.row.materialPrice,
         "parentID": val.row.parentID,
         "materialID": val.row.materialID,
-        "flag": val.row.flag,
-        "materialType": this.materialTypeArr[val.row.materialType - 1],
+        "flag": val.row.flag.trim(),
+        "materialType": val.row.materialType,
         "index": val.$index
       }
+
+      // this.value6 = val.row.flag;
+      this.value6 = val.row.flag.trim() === "0" ? '关闭' : '开售';
+      this.value7 = this.materialTypeArr[val.row.materialType - 1]
 
       if(parseInt(val.row.parentID)) { // 父级产品ID 为0时 无父级
         this.getSelectData(val.row.materialType, val.row.parentID);
@@ -358,6 +384,15 @@ export default {
     }, 200, {
       "maxWait": 500
     }),
+    materialTypeChange(val) { // 产品类别change
+      this.form.materialType = val;
+    },
+    flagChange(val) { // 在售状态change
+      this.form.flag = val;
+    },
+    parentID_Change(val) { // 选择产品下拉
+      this.form.materialID = val;
+    },
     handleConfirmEdit: debounce(function() { // 确定修改
       this.$http.post("material/update", {
         "materialName": this.form.materialName,
@@ -368,8 +403,55 @@ export default {
         "materialType": this.form.materialTypeArr
       }).then(data => {
         console.log(data)
+        let myData = data.data;
+            if(!this.$isEmpty(myData)) {
+              let status = myData.status;
+
+              switch(status) {
+                case "success":
+                  this.$message({
+                    showClose: true,
+                    message: '修改信息成功',
+                    duration: 1500,
+                    type: "success"
+                  })
+
+                  this.dialogFormVisible = false;
+
+                  break;
+                case "failure":
+                  this.$message({
+                    showClose: true,
+                    message: myData.info,
+                    duration: 0,
+                    type: "error"
+                  })
+                  break;
+                default:
+                  this.$message({
+                    showClose: true,
+                    message: '修改信息失败',
+                    duration: 0,
+                    type: "error"
+                  })
+                  break;
+              }
+          }else {
+            this.$message({
+              showClose: true,
+              message: '返回信息错误',
+              duration: 0,
+              type: "error"
+            })
+          }
       }).catch(error => {
         console.log(error)
+        this.$message({
+          showClose: true,
+          message: error.message,
+          duration: 0,
+          type: "error"
+        })
       })
     }, 200, {
       "maxWait": 500
@@ -381,8 +463,8 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
     },
-    handleAddPro: debounce(function(formName) { // 添加产品
-    console.log(formName)
+    handleAddPro: debounce(function(formName) { // 确定添加产品
+      console.log(formName)
       this.$refs[formName].validate((valid) => {
         if(valid) {
           this.$http.post("agency/creat", {
