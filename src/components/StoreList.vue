@@ -273,6 +273,21 @@ export default {
 
                     this.dialogFormVisible2 = false;
 
+                    if(this.currentPage === 1) { //如果当前页为第一页，则不刷新请求表格数据
+                      this.tableData1.splice(0, 1, {
+                        "agencyName": this.form2.agencyName,
+                        "address": this.form2.address,
+                        "agencyTel": this.form2.telephone,
+                        "cityID": this.form2.cityID,
+                        "boroughID": this.form2.boroughID,
+                        "plateID": this.form2.plateID,
+                        "linkName": this.form2.linkName
+                      })
+                    }else {
+                      this.currentPage = 1;
+                    }
+                    
+
                     break;
                   case "failure":
                     this.$message({
