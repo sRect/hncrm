@@ -80,7 +80,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择产品" :label-width="formLabelWidth">
+          <el-form-item label="父级产品" :label-width="formLabelWidth">
             <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
             <el-select v-model="value4" @change="parentID_Change" :disabled="disabledFlag" placeholder="请选择">
               <el-option
@@ -390,8 +390,8 @@ export default {
     flagChange(val) { // 在售状态change
       this.form.flag = val;
     },
-    parentID_Change(val) { // 选择产品下拉
-      this.form.materialID = val;
+    parentID_Change(val) { // 父级产品下拉
+      this.form.parentID = val;
     },
     handleConfirmEdit: debounce(function() { // 确定修改
       this.$http.post("material/update", {
@@ -467,6 +467,17 @@ export default {
       console.log(formName)
       this.$refs[formName].validate((valid) => {
         if(valid) {
+          if(!this.value5) {
+            this.$message({
+              showClose: true,
+              message: "请选择产品类别！",
+              duration: 3000,
+              type: "warning"
+            })
+
+            return
+          }
+
           this.$http.post("agency/creat", {
             "materialName": this.form2.materialName,
             "materialPrice": this.form2.materialPrice,
