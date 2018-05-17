@@ -486,6 +486,7 @@ export default {
                       });
 
                       this.dialogFormVisible2 = false;
+                      this.currentPage !== 1 ? (this.currentPage = 1) : this.getData();
 
                       break;
                     case "failure":
