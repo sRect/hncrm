@@ -1,49 +1,24 @@
 <template>
   <div>
-  <div class="top clearfix">
+    <div class="top clearfix">
       <div>
-        <el-button  type="primary" @click="dialogFormVisible2 = true">添加产品</el-button>
+        <el-button type="primary" @click="dialogFormVisible2 = true">添加产品</el-button>
       </div>
     </div>
 
     <div class="main">
-      <el-table
-        :data="tableData3"
-        max-height="400"
-        border
-        stripe
-        style="width: 100%">
-        <el-table-column
-          prop="materialName"
-          label="产品名称"
-          :show-overflow-tooltip="true"
-          sortable>
+      <el-table :data="tableData3" max-height="400" border stripe style="width: 100%">
+        <el-table-column prop="materialName" label="产品名称" :show-overflow-tooltip="true" sortable>
         </el-table-column>
-        <el-table-column
-          prop="materialType"
-          label="产品类别"
-          :formatter="formatter_materialType"
-          :show-overflow-tooltip="true"
-          sortable>
+        <el-table-column prop="materialType" label="产品类别" :formatter="formatter_materialType" :show-overflow-tooltip="true" sortable>
         </el-table-column>
-        <el-table-column
-          prop="materialPrice"
-          sortable
-          label="产品价格">
+        <el-table-column prop="materialPrice" sortable label="产品价格">
         </el-table-column>
-        <el-table-column
-          prop="flag"
-          label="在售状态"
-          :formatter="formatter_flag"
-          sortable>
+        <el-table-column prop="flag" label="在售状态" :formatter="formatter_flag" sortable>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button 
-              type="primary" 
-              size="small"
-              plain
-              @click="handleDialog(scope)">
+            <el-button type="primary" size="small" plain @click="handleDialog(scope)">
               修改
             </el-button>
           </template>
@@ -61,33 +36,21 @@
           <el-form-item label="产品类别" :label-width="formLabelWidth">
             <!-- <el-input v-model="form.materialType" auto-complete="off"></el-input> -->
             <el-select v-model="value7" @change="materialTypeChange" placeholder="请选择">
-              <el-option
-                v-for="item in options2"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in options2" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="在售状态" :label-width="formLabelWidth">
             <!-- <el-input v-model="form.flag === 0 ? '关闭' : '开售'" auto-complete="off"></el-input> -->
             <el-select v-model="value6" @change="flagChange" placeholder="请选择">
-              <el-option
-                v-for="item in options3"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in options3" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="父级产品" :label-width="formLabelWidth">
             <!-- <el-input v-model="form.parentID" auto-complete="off"></el-input> -->
             <el-select v-model="value4" @change="parentID_Change" :disabled="disabledFlag" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -108,11 +71,7 @@
           </el-form-item>
           <el-form-item label="产品类别" :label-width="formLabelWidth">
             <el-select v-model="value5" placeholder="请选择">
-              <el-option
-                v-for="item in options2"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in options2" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -128,57 +87,48 @@
     </div>
 
     <div class="pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-size="pageSize"
-        layout="prev, pager, next, jumper"
-        :total="pageCount">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="pageSize" layout="prev, pager, next, jumper" :total="pageCount">
       </el-pagination>
     </div>
-    
+
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
+import debounce from "lodash/debounce";
 
 export default {
-  data () {
+  data() {
     return {
       tableData3: [],
       pageSize: 20, // 每页大小
       currentPage: 1, // 当前页
       pageCount: 0, // 总条数
-      dialogFormVisible: false, // 修改dialog 
+      dialogFormVisible: false, // 修改dialog
       formLabelWidth: "100px",
       form: {
-        "materialName": "",
-        "materialPrice": "",
-        "parentID": "",
-        "materialID": "",
-        "flag": "",
-        "materialType": "",
-        "materialTypeName": ""
+        materialName: "",
+        materialPrice: "",
+        parentID: "",
+        materialID: "",
+        flag: "",
+        materialType: "",
+        materialTypeName: ""
       },
       form2: {
-        "materialName": "",
-        "materialPrice": "",
-        "parentID": "0"
+        materialName: "",
+        materialPrice: "",
+        parentID: "0"
       },
       options: [], // 下拉框数据
       options2: [
-        {id: 1, name: "虾类"},
-        {id: 2, name: "料类"},
-        {id: 3, name: "卤品类"},
-        {id: 4, name: "打包盒类"}
+        { id: 1, name: "虾类" },
+        { id: 2, name: "料类" },
+        { id: 3, name: "卤品类" },
+        { id: 4, name: "打包盒类" }
       ],
-      options3: [
-        {id: 0, name: "关闭"},
-        {id: 1, name: "开售"}
-      ],
-      value4: '', // 下拉框默认数据
+      options3: [{ id: 0, name: "关闭" }, { id: 1, name: "开售" }],
+      value4: "", // 下拉框默认数据
       value5: "", // 添加产品下拉框
       value6: "", // 修改产品状态下拉
       value7: "", // 修改产品产品类别下拉
@@ -187,144 +137,157 @@ export default {
       materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类"],
       rules: {
         materialName: [
-          { required: true, message: '请输入产品名称', trigger: 'blur' }
+          { required: true, message: "请输入产品名称", trigger: "blur" }
         ],
         materialPrice: [
-          { required: true, message: '请输入产品价格', trigger: 'blur' }
+          { required: true, message: "请输入产品价格", trigger: "blur" }
         ]
       }
+    };
+  },
+  watch: {
+    currentPage(val, oldVal) {
+      this.getData();
     }
   },
   methods: {
-    getData() { // 获取表格数据
-      this.$http.post("/material/materialList", {
-        "pageNum": this.currentPage - 1,
-        "pageSize": this.pageSize
-      }).then(data => {
-        console.log(data)
-        let myData = data.data;
+    getData() {
+      // 获取表格数据
+      this.$http
+        .post("/material/materialList", {
+          pageNum: this.currentPage - 1,
+          pageSize: this.pageSize
+        })
+        .then(data => {
+          console.log(data);
+          let myData = data.data;
 
-          if(!this.$isEmpty(myData)) {
+          if (!this.$isEmpty(myData)) {
             let status = myData.status;
 
-            switch(status) {
+            switch (status) {
               case "success":
                 let obj = myData.data;
-                if(!this.$isEmpty(obj)) { 
+                if (!this.$isEmpty(obj)) {
                   this.pageCount = Number.parseInt(obj.pageCount);
                   this.tableData3 = obj.page;
-                }else {
+                } else {
                   this.$message({
                     showClose: true,
-                    message: '产品列表查询错误',
+                    message: "产品列表查询错误",
                     duration: 0,
                     type: "error"
-                  })
+                  });
                 }
                 break;
               case "failure":
                 this.$message({
                   showClose: true,
-                  message: '产品列表查询错误',
+                  message: "产品列表查询错误",
                   duration: 0,
                   type: "error"
-                })
+                });
                 break;
               default:
                 this.$message({
                   showClose: true,
-                  message: '产品列表查询错误',
+                  message: "产品列表查询错误",
                   duration: 0,
                   type: "error"
-                })
+                });
                 break;
             }
-          }else {
+          } else {
             this.$message({
               showClose: true,
-              message: '产品列表获取错误',
+              message: "产品列表获取错误",
               duration: 0,
               type: "error"
-            })
+            });
           }
-      }).catch(error => {
-        console.log(error)
-        this.$message({
-          showClose: true,
-          message: error.message,
-          duration: 0,
-          type: "error"
         })
-      })
-    },
-    getSelectData(materialType, parentID) { // 获取下拉数据
-      this.$http.post("material/materialDropDown", {
-        "materialType": materialType
-      }).then(data => {
-        console.log(data)
-        let myData = data.data;
-
-        if(!this.$isEmpty(myData)) {
-          let status = myData.status;
-
-          switch(status) {
-            case "success":
-              let obj = myData.data;
-              if(!this.$isEmpty(obj)) { 
-                this.options = obj;
-                this.value4 = parentID;
-              }else {
-                this.$message({
-                  showClose: true,
-                  message: '父级产品下拉查询错误',
-                  duration: 0,
-                  type: "error"
-                })
-                this.options = [];
-              }
-              break;
-            case "failure":
-              this.$message({
-                showClose: true,
-                message: '父级产品下拉查询错误',
-                duration: 0,
-                type: "error"
-              })
-              this.options = [];
-              break;
-            default:
-              this.$message({
-                showClose: true,
-                message: '父级产品下拉查询错误',
-                duration: 0,
-                type: "error"
-              })
-              this.options = [];
-              break;
-          }
-        }else {
+        .catch(error => {
+          console.log(error);
           this.$message({
             showClose: true,
-            message: '父级产品下拉查询错误',
+            message: error.message,
             duration: 0,
             type: "error"
-          })
-          this.options = [];
-        }
-      }).catch(error => {
-        console.log(error)
-        this.$message({
-          showClose: true,
-          message: error.message,
-          duration: 0,
-          type: "error"
+          });
+        });
+    },
+    getSelectData(materialType, parentID) {
+      // 获取下拉数据
+      this.$http
+        .post("material/materialDropDown", {
+          materialType: materialType
         })
-        this.options = [];
-      })
+        .then(data => {
+          console.log(data);
+          let myData = data.data;
+
+          if (!this.$isEmpty(myData)) {
+            let status = myData.status;
+
+            switch (status) {
+              case "success":
+                let obj = myData.data;
+                if (!this.$isEmpty(obj)) {
+                  this.options = obj;
+                  this.value4 = parentID;
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: "父级产品下拉查询错误",
+                    duration: 0,
+                    type: "error"
+                  });
+                  this.options = [];
+                }
+                break;
+              case "failure":
+                this.$message({
+                  showClose: true,
+                  message: "父级产品下拉查询错误",
+                  duration: 0,
+                  type: "error"
+                });
+                this.options = [];
+                break;
+              default:
+                this.$message({
+                  showClose: true,
+                  message: "父级产品下拉查询错误",
+                  duration: 0,
+                  type: "error"
+                });
+                this.options = [];
+                break;
+            }
+          } else {
+            this.$message({
+              showClose: true,
+              message: "父级产品下拉查询错误",
+              duration: 0,
+              type: "error"
+            });
+            this.options = [];
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.$message({
+            showClose: true,
+            message: error.message,
+            duration: 0,
+            type: "error"
+          });
+          this.options = [];
+        });
     },
     formatter_materialType(row, column, cellValue, index) {
       let newVal = parseInt(cellValue);
-      switch(newVal) {
+      switch (newVal) {
         case 1:
           return "虾类";
           break;
@@ -344,7 +307,7 @@ export default {
     },
     formatter_flag(row, column, cellValue, index) {
       let newVal = parseInt(cellValue);
-      switch(newVal) {
+      switch (newVal) {
         case 0:
           return "关闭";
           break;
@@ -355,68 +318,84 @@ export default {
           break;
       }
     },
-    handleDialog: debounce(function(val) { // 修改按钮打开dialog
-      this.dialogFormVisible = true;
-      
-      this.form = {
-        "materialName": val.row.materialName,
-        "materialPrice": val.row.materialPrice,
-        "parentID": val.row.parentID,
-        "materialID": val.row.materialID,
-        "flag": val.row.flag.trim(),
-        "materialType": val.row.materialType,
-        "index": val.$index
-      }
+    handleDialog: debounce(
+      function(val) {
+        // 修改按钮打开dialog
+        this.dialogFormVisible = true;
 
-      // this.value6 = val.row.flag;
-      this.value6 = val.row.flag.trim() === "0" ? '关闭' : '开售';
-      this.value7 = this.materialTypeArr[val.row.materialType - 1]
+        this.form = {
+          materialName: val.row.materialName,
+          materialPrice: val.row.materialPrice,
+          parentID: val.row.parentID,
+          materialID: val.row.materialID,
+          flag: val.row.flag.trim(),
+          materialType: val.row.materialType,
+          index: val.$index
+        };
 
-      if(parseInt(val.row.parentID)) { // 父级产品ID 为0时 无父级
-        this.getSelectData(val.row.materialType, val.row.parentID);
-        this.disabledFlag = false;
-      }else {
-        this.options = [];
-        this.value4 = "";
-        this.disabledFlag = true;
+        // this.value6 = val.row.flag;
+        this.value6 = val.row.flag.trim() === "0" ? "关闭" : "开售";
+        this.value7 = this.materialTypeArr[val.row.materialType - 1];
+
+        if (parseInt(val.row.parentID)) {
+          // 父级产品ID 为0时 无父级
+          this.getSelectData(val.row.materialType, val.row.parentID);
+          this.disabledFlag = false;
+        } else {
+          this.options = [];
+          this.value4 = "";
+          this.disabledFlag = true;
+        }
+      },
+      200,
+      {
+        maxWait: 500
       }
-      
-    }, 200, {
-      "maxWait": 500
-    }),
-    materialTypeChange(val) { // 产品类别change
+    ),
+    materialTypeChange(val) {
+      // 产品类别change
       this.form.materialType = val;
     },
-    flagChange(val) { // 在售状态change
+    flagChange(val) {
+      // 在售状态change
       this.form.flag = val;
     },
-    parentID_Change(val) { // 父级产品下拉
+    parentID_Change(val) {
+      // 父级产品下拉
       this.form.parentID = val;
     },
-    handleConfirmEdit: debounce(function() { // 确定修改
-      this.$http.post("material/update", {
-        "materialName": this.form.materialName,
-        "materialPrice": this.form.materialPrice,
-        "parentID": this.form.parentID,
-        "materialID": this.form.materialID,
-        "flag": this.form.flag,
-        "materialType": this.form.materialTypeArr
-      }).then(data => {
-        console.log(data)
-        let myData = data.data;
-            if(!this.$isEmpty(myData)) {
+    handleConfirmEdit: debounce(
+      function() {
+        // 确定修改
+        this.$http
+          .post("material/update", {
+            materialName: this.form.materialName,
+            materialPrice: this.form.materialPrice,
+            parentID: this.form.parentID,
+            materialID: this.form.materialID,
+            flag: this.form.flag,
+            materialType: this.form.materialType
+          })
+          .then(data => {
+            console.log(data);
+            let myData = data.data;
+            if (!this.$isEmpty(myData)) {
               let status = myData.status;
 
-              switch(status) {
+              switch (status) {
                 case "success":
                   this.$message({
                     showClose: true,
-                    message: '修改信息成功',
+                    message: "修改信息成功",
                     duration: 1500,
                     type: "success"
-                  })
+                  });
 
                   this.dialogFormVisible = false;
+
+                  this.currentPage !== 1
+                    ? (this.currentPage = 1)
+                    : this.getData();
 
                   break;
                 case "failure":
@@ -425,138 +404,152 @@ export default {
                     message: myData.info,
                     duration: 0,
                     type: "error"
-                  })
+                  });
                   break;
                 default:
                   this.$message({
                     showClose: true,
-                    message: '修改信息失败',
+                    message: "修改信息失败",
                     duration: 0,
                     type: "error"
-                  })
+                  });
                   break;
               }
-          }else {
-            this.$message({
-              showClose: true,
-              message: '返回信息错误',
-              duration: 0,
-              type: "error"
-            })
-          }
-      }).catch(error => {
-        console.log(error)
-        this.$message({
-          showClose: true,
-          message: error.message,
-          duration: 0,
-          type: "error"
-        })
-      })
-    }, 200, {
-      "maxWait": 500
-    }),
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) { // 分页点击
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-    },
-    handleAddPro: debounce(function(formName) { // 确定添加产品
-      console.log(formName)
-      this.$refs[formName].validate((valid) => {
-        if(valid) {
-          if(!this.value5) {
-            this.$message({
-              showClose: true,
-              message: "请选择产品类别！",
-              duration: 3000,
-              type: "warning"
-            })
-
-            return
-          }
-
-          this.$http.post("agency/creat", {
-            "materialName": this.form2.materialName,
-            "materialPrice": this.form2.materialPrice,
-            "parentID": this.form2.parentID,
-            "materialType": this.value5
-          }).then(data => {
-            let myData = data.data;
-            if(!this.$isEmpty(myData)) {
-              let status = myData.status;
-
-              switch(status) {
-                  case "success":
-                    this.$message({
-                      showClose: true,
-                      message: '添加信息成功',
-                      duration: 1500,
-                      type: "success"
-                    })
-
-                    this.dialogFormVisible2 = false;
-
-                    break;
-                  case "failure":
-                    this.$message({
-                      showClose: true,
-                      message: myData.info,
-                      duration: 0,
-                      type: "error"
-                    })
-                    break;
-                  default:
-                    this.$message({
-                      showClose: true,
-                      message: '添加信息失败',
-                      duration: 0,
-                      type: "error"
-                    })
-                    break;
-                }
-            }else {
+            } else {
               this.$message({
                 showClose: true,
-                message: '返回信息错误',
+                message: "返回信息错误",
                 duration: 0,
                 type: "error"
-              })
+              });
             }
-          }).catch(error => {
-            console.log(error)
+          })
+          .catch(error => {
+            console.log(error);
             this.$message({
               showClose: true,
               message: error.message,
               duration: 0,
               type: "error"
-            })
-          })
-        }else {
-          this.$message({
-            showClose: true,
-            message: "输入有误，请检查您的输入信息！",
-            duration: 3000,
-            type: "warning"
-          })
-          return false;
-        }
-      })
-    }, 200, {
-      "maxWait": 500
-    })
+            });
+          });
+      },
+      200,
+      {
+        maxWait: 500
+      }
+    ),
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      // 分页点击
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    },
+    handleAddPro: debounce(
+      function(formName) {
+        // 确定添加产品
+        console.log(formName);
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            if (!this.value5) {
+              this.$message({
+                showClose: true,
+                message: "请选择产品类别！",
+                duration: 3000,
+                type: "warning"
+              });
+
+              return;
+            }
+
+            this.$http
+              .post("material/creat", {
+                materialName: this.form2.materialName,
+                materialPrice: this.form2.materialPrice,
+                parentID: this.form2.parentID,
+                materialType: this.value5
+              })
+              .then(data => {
+                let myData = data.data;
+                if (!this.$isEmpty(myData)) {
+                  let status = myData.status;
+
+                  switch (status) {
+                    case "success":
+                      this.$message({
+                        showClose: true,
+                        message: "添加信息成功",
+                        duration: 1500,
+                        type: "success"
+                      });
+
+                      this.dialogFormVisible2 = false;
+
+                      break;
+                    case "failure":
+                      this.$message({
+                        showClose: true,
+                        message: myData.info,
+                        duration: 0,
+                        type: "error"
+                      });
+                      break;
+                    default:
+                      this.$message({
+                        showClose: true,
+                        message: "添加信息失败",
+                        duration: 0,
+                        type: "error"
+                      });
+                      break;
+                  }
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: "返回信息错误",
+                    duration: 0,
+                    type: "error"
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message({
+                  showClose: true,
+                  message: error.message,
+                  duration: 0,
+                  type: "error"
+                });
+              });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "输入有误，请检查您的输入信息！",
+              duration: 3000,
+              type: "warning"
+            });
+            return false;
+          }
+        });
+      },
+      200,
+      {
+        maxWait: 500
+      }
+    )
   },
   mounted() {
     this.getData();
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.main,.top {
+.main,
+.top {
   padding-top: 20px;
 }
 .pagination {
