@@ -125,7 +125,8 @@ export default {
         { id: 1, name: "虾类" },
         { id: 2, name: "料类" },
         { id: 3, name: "卤品类" },
-        { id: 4, name: "打包盒类" }
+        { id: 4, name: "打包盒类" },
+        { id: 5, name: "啤酒饮料" }
       ],
       options3: [{ id: 0, name: "关闭" }, { id: 1, name: "开售" }],
       value4: "", // 下拉框默认数据
@@ -134,7 +135,7 @@ export default {
       value7: "", // 修改产品产品类别下拉
       disabledFlag: false, // 禁用下拉框
       dialogFormVisible2: false,
-      materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类"],
+      materialTypeArr: ["虾类", "料类", "卤品类", "打包盒类", "啤酒饮料"],
       rules: {
         materialName: [
           { required: true, message: "请输入产品名称", trigger: "blur" }
@@ -299,6 +300,9 @@ export default {
           break;
         case 4:
           return "打包盒类";
+          break;
+        case 5:
+          return "啤酒饮料";
           break;
         default:
           return "--";
